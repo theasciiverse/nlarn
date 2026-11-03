@@ -1,0 +1,37 @@
+# System packages (.deb, .rpm, .apk, Arch) for NLarn's terminal edition,
+# built by nfpm from the same static binary as the av archive. The release
+# workflow sets VERSION, RELEASE (our packaging release) and ARCH. The game
+# data goes to /usr/share/nlarn, where NLarn looks when there is no lib/
+# beside its binary; players' settings and saves stay in ~/.nlarn.
+#
+# No .desktop file on purpose: av is the one place titles are started from.
+name: nlarn
+arch: ${ARCH}
+platform: linux
+version: ${VERSION}
+release: ${RELEASE}
+section: games
+priority: optional
+maintainer: Asciiverse <packages@asciiverse.sh>
+vendor: Asciiverse
+homepage: https://github.com/theasciiverse/nlarn
+license: GPL-3.0-or-later
+description: |
+  Roguelike: a rewrite of Noah Morgan's Larn (1986), for the terminal.
+  Find the cure for your daughter in the caverns of Larn and the volcano
+  below before time runs out. Joachim de Groot's NLarn keeps the story
+  and atmosphere of Larn 12.3 and improves the play; in English, German,
+  French, Spanish and Portuguese. Packaged by Asciiverse.
+contents:
+  - src: out/nlarn
+    dst: /usr/bin/nlarn
+    file_info: { mode: 0755 }
+  - src: out/lib/
+    dst: /usr/share/nlarn/
+    type: tree
+  - src: LICENSE
+    dst: /usr/share/doc/nlarn/copyright
+    file_info: { mode: 0644 }
+  - src: PATCHES.md
+    dst: /usr/share/doc/nlarn/PATCHES.md
+    file_info: { mode: 0644 }
