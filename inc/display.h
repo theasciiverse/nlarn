@@ -29,6 +29,12 @@
 #define PDC_NCMOUSE
 
 #include <curses.h>
+
+/* ncurses 5.7 (macOS's system curses) predates the fifth mouse button,
+   the wheel turned down; the wheel then only scrolls one way there */
+#ifndef BUTTON5_PRESSED
+# define BUTTON5_PRESSED 0
+#endif
 #include <panel.h>
 #include <glib.h>
 

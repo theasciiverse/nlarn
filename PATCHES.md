@@ -14,6 +14,14 @@ how av and the system packages lay it out, so no change was needed there.
 
 ## Changes
 
+- **Warnings stay warnings** (`Makefile`): upstream builds with `-Werror`, so a
+  new warning from a newer compiler stops the build. On ARM, where `wchar_t`
+  is unsigned, GCC 14 warns about comparing a glyph with an `int` key
+  (`display.c`) and the release build failed. Release builds drop `-Werror`,
+  as distributions usually do; the warnings are still shown.
+- **Builds against macOS's ncurses 5.7** (`inc/display.h`): it has no
+  `BUTTON5_PRESSED` (the wheel turned down), which `display.c` uses; it is
+  defined as 0 there, so the wheel scrolls only up on macOS.
 - **Builds with musl** (`src/nlarn.c`): the crash handler and the
   assertion handler printed a backtrace with glibc's `execinfo.h`, which
   musl does not have; that part is now used only where the header exists.
