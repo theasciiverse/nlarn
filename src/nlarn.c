@@ -32,7 +32,16 @@
 #include <glib/gstdio.h>
 
 #ifdef __unix
-# include <execinfo.h>
+/* Asciiverse: musl (static Linux builds) has no execinfo.h */
+# if defined(__has_include)
+#  if __has_include(<execinfo.h>)
+#   include <execinfo.h>
+#   define HAVE_EXECINFO 1
+#  endif
+# else
+#  include <execinfo.h>
+#  define HAVE_EXECINFO 1
+# endif
 # include <dlfcn.h>
 # include <signal.h>
 # include <unistd.h>
@@ -1492,7 +1501,7 @@ static void nlarn_crash_handler(int signo __attribute__((unused)))
        hence backtrace_symbols_fd() rather than backtrace_symbols(). */
 # ifdef HAVE_LIBUNWIND
     print_libunwind_backtrace();
-# else
+# elif defined(HAVE_EXECINFO)
     g_printerr("\n*** Backtrace ***\n");
 
     void *callstack[128];
@@ -1540,7 +1549,7 @@ static void nlarn_assert_handler(const gchar *log_domain, GLogLevelFlags log_lev
 #ifdef __unix
 # ifdef HAVE_LIBUNWIND
         print_libunwind_backtrace();
-# else
+# elif defined(HAVE_EXECINFO)
         g_printerr("\n*** Backtrace ***\n");
 
         void *callstack[128];
