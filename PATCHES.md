@@ -19,9 +19,13 @@ how av and the system packages lay it out, so no change was needed there.
   is unsigned, GCC 14 warns about comparing a glyph with an `int` key
   (`display.c`) and the release build failed. Release builds drop `-Werror`,
   as distributions usually do; the warnings are still shown.
-- **Builds against macOS's ncurses 5.7** (`inc/display.h`): it has no
-  `BUTTON5_PRESSED` (the wheel turned down), which `display.c` uses; it is
-  defined as 0 there, so the wheel scrolls only up on macOS.
+- **Builds on macOS with Homebrew's ncurses** (`Makefile`): it linked
+  `pkg-config --libs ncursesw panelw` but took no `--cflags`, so on macOS the
+  game compiled against the system's ncurses 5.7 headers and failed to link
+  with Homebrew's ncurses 6 (`_wvline$NCURSES60` not found). On macOS it now
+  takes those headers too. As a fallback for a build against ncurses 5.7,
+  `inc/display.h` defines `BUTTON5_PRESSED` (the wheel turned down) as 0
+  when the headers lack it.
 - **Builds with musl** (`src/nlarn.c`): the crash handler and the
   assertion handler printed a backtrace with glibc's `execinfo.h`, which
   musl does not have; that part is now used only where the header exists.

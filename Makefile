@@ -131,6 +131,11 @@ endif
 
 ifeq ($(OS),Darwin)
   OSXIMAGE := nlarn-$(VERSION).dmg
+  # the system's curses.h is ncurses 5.7: compile against the headers of the
+  # ncursesw linked above (Homebrew's), or the symbols don't match
+  ifneq ($(SDLPDCURSES),Y)
+    CFLAGS += $(shell pkg-config --cflags ncursesw panelw)
+  endif
 endif
 
 # Check if libunwind is available (skip on Windows)
